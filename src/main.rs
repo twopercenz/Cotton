@@ -1,39 +1,59 @@
-use logos::Logos;
+use cotton_lexer::Lexer;
 
-// 1. 매크로(#[derive(Logos)]) 하나만 붙이면 끝납니다.
-#[derive(Logos, Debug, PartialEq)]
-enum Token {
-    // 단순 키워드나 기호는 #[token]으로 바로 지정!
-    #[token("let")]
-    Let,
+/// 명세 §A.14 "예제" 스니펫을 그대로 토큰화해 결과를 보여준다.
+const WORKED_EXAMPLE: &str = "fn greet(name: str) -> String {\n    \"Hello, {name}!\"\n}\n";
 
-    #[token("mut")]
-    Mut,
-
-    #[token("=")]
-    Assign,
-
-    // 변수명이나 숫자는 정규표현식(Regex)으로 한 방에 처리!
-    #[regex("[a-zA-Z_][a-zA-Z0-9_]*", |lex| lex.slice().to_string())]
-    Identifier(String),
-
-    // 숫자를 파싱해서 바로 i64 타입으로 넣어버리는 마법
-    #[regex("[0-9]+", |lex| lex.slice().parse::<i64>().unwrap())]
-    Number(i64),
-
-    // 띄어쓰기나 엔터는 알아서 무시(skip)하라고 명령
-    #[regex(r"[ \t\n\f]+", logos::skip)]
-    Error,
+fn dump(label: &str, src: &str) {
+    println!("=== {label} ===");
+    println!("--- source ---\n{src}");
+    println!("--- tokens ---");
+    let tokens = Lexer::new(src).tokenize();
+    for t in &tokens {
+        println!("{:>3}:{:<3} {}", t.span.line, t.span.col, t);
+    }
+    println!();
 }
 
 fn main() {
-    let code = "let mut zenith = 2026";
-    
-    // 2. 단 한 줄로 렉서 엔진 가동!
-    let mut lexer = Token::lexer(code);
+    dump("worked example (spec SS A.14)", WORKED_EXAMPLE);
 
-    // 3. 토큰을 쭉쭉 뽑아냅니다.
-    while let Some(token) = lexer.next() {
-        println!("{:?}", token);
-    }
+    // ASI 규칙 예제 (§A.4)
+    dump(
+        "ASI: multi-line expression (no semicolon inserted mid-expression)",
+        "let total = a +\n    b +\n    c\n",
+    );
+    dump(
+        "ASI: multi-line call (semicolon inserted after closing paren)",
+        "let result = compute(\n    x, y, z\n)\n",
+    );
+
+    // 숫자 리터럴
+    dump(
+        "numeric literals",
+        "42 1_000_000 0xFF_FF 0b1010_1010 10u8 3.14 2.5e10 1_000.5f32 6.02e23\n",
+    );
+
+    // 중첩 보간 문자열
+    dump(
+        "nested string interpolation",
+        "let s = \"Total: {items.len() + 1}\"\n",
+    );
+
+    // raw 문자열 / raw 식별자
+    dump(
+        "raw strings & raw identifiers",
+        "r\"raw\\path\" r#\"contains \"quotes\" safely\"# let r#type = 1\n",
+    );
+
+    // 중첩 블록 주석 & 문서 주석
+    dump(
+        "nested block comments & doc comments",
+        "/* outer /* inner */ still outer */\n/// doc comment\nfn f() {}\n//! module doc\n",
+    );
+
+    // 렉서 에러 예시 (복구 가능)
+    dump(
+        "recoverable lexer errors",
+        "let x = \"unterminated\nlet y = 0x\nlet z = $stray\n",
+    );
 }
