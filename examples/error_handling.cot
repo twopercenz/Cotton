@@ -1,0 +1,37 @@
+fn divide(a: f64, b: f64) -> Result<f64, str> {
+    if b == 0 {
+        return Err("division by zero")
+    }
+    Ok(a / b)
+}
+
+fn safe_divide(a: f64, b: f64) -> f64 {
+    let v = divide(a, b) ?? 0.0
+    v
+}
+
+fn try_divide(a: f64, b: f64) -> Result<f64, str> {
+    let val = divide(a, b)?
+    Ok(val * 2)
+}
+
+fn main() {
+    let ok = divide(10, 2)?
+    print(`10/2 = ${ok}`)
+
+    let fallback = divide(10, 0) ?? -1.0
+    print(`10/0 fallback = ${fallback}`)
+
+    let result = try_divide(20, 4)
+    print(`try_divide 20/4 *2 = ${result}`)
+
+    let err_result = try_divide(10, 0)
+    print(`try_divide 10/0 = ${err_result}`)
+
+    // Option and ?.
+    let maybe_name: Option<str> = Some("Cotton")
+    // let len = maybe_name?.len()  -- optional chaining would return None if None
+    let none_val: Option<i32> = None
+    let coalesced = none_val ?? 42
+    print(`None ?? 42 = ${coalesced}`)
+}
