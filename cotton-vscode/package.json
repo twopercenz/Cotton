@@ -1,0 +1,45 @@
+{
+  "name": "cotton-lang",
+  "displayName": "Cotton Language",
+  "description": "Syntax highlighting for Cotton – compiler absorbs difficulty, programmer writes short readable code. No GC, ownership, expression-oriented, zero-cost.",
+  "version": "0.1.0",
+  "publisher": "cotton-lang",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Programming Languages"],
+  "keywords": ["cotton", "rust", "ownership", "systems"],
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#F5E9C9",
+    "theme": "light"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "cotton",
+        "aliases": ["Cotton", "cotton"],
+        "extensions": [".cot", ".cotton"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "cotton",
+        "scopeName": "source.cotton",
+        "path": "./syntaxes/cotton.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "cotton",
+        "path": "./snippets/cotton.json"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cotton-lang/cotton"
+  },
+  "license": "MIT"
+}

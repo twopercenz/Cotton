@@ -1,0 +1,34 @@
+import math
+
+struct Point {
+    x: f64
+    y: f64
+}
+
+impl Point {
+    fn distance(self, other: Point) -> f64 {
+        ((self.x - other.x) ** 2 + (self.y - other.y) ** 2).sqrt()
+    }
+}
+
+fn closest_pair(points: [Point]) -> (Point, Point) {
+    let mut best = (points[0], points[1])
+    let mut best_dist = points[0].distance(points[1])
+
+    for i in 0..points.len() {
+        for j in (i + 1)..points.len() {
+            let d = points[i].distance(points[j])
+            if d < best_dist {
+                best_dist = d
+                best = (points[i], points[j])
+            }
+        }
+    }
+    best
+}
+
+fn main() {
+    let points = [Point{x: 0, y: 0}, Point{x: 3, y: 4}, Point{x: 1, y: 1}]
+    let (a, b) = closest_pair(points)
+    print(`Closest pair: ${a.x},${a.y} and ${b.x},${b.y}`)
+}

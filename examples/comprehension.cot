@@ -1,0 +1,23 @@
+fn main() {
+    let nums = [1, 2, 3, 4, 5]
+    let squares = [n * n for n in nums]
+    print(`Squares: ${squares}`)
+
+    let evens = [n for n in nums if n % 2 == 0]
+    print(`Evens: ${evens}`)
+
+    let pairs = [(i, j) for i in 0..3 for j in 0..3 if i != j]
+    print(`Pairs where i != j: ${pairs}`)
+
+    let lookup = {x: x * x for x in nums}
+    print(`Lookup squares dict: ${lookup}`)
+
+    let [first, ...rest] = nums
+    print(`First: ${first}, Rest: ${rest}`)
+
+    let (a, b, c) = (1, 2, 3)
+    print(`Destructured: ${a}, ${b}, ${c}`)
+
+    let spaced = [1, 2, ...[3, 4], 5]
+    print(`Spread: ${spaced}`)
+}

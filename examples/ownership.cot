@@ -1,0 +1,40 @@
+struct Buffer {
+    id: i32
+}
+
+fn consume_buffer(buf: Buffer) {
+    print(`Consuming buffer ${buf.id}`)
+}
+
+fn main() {
+    let a = 42                // stack, Copy
+    let b = Box(Buffer{id: 1})
+    print(`Boxed: ${b.value.id}`)
+
+    let r = &a
+    print(`Borrow &a = ${r}`)
+
+    let mut y = 10
+    let m = &mut y
+    print(`Borrow &mut y = ${m}`)
+
+    // Move semantics demo
+    let buf1 = Buffer{id: 100}
+    let buf2 = buf1             // move
+    // print(`${buf1}`) would error: Use of moved value 'buf1'
+    print(`Moved to buf2: ${buf2.id}`)
+
+    // Copy types don't move
+    let x = 5
+    let y = x                  // x still valid because int is Copy
+    print(`x=${x}, y=${y} (Copy)`)
+
+    // Closure capturing
+    let factor = 3
+    let mul = |n| n * factor   // captures factor
+    print(`3*4=${mul(4)}`)
+
+    unsafe {
+        print("unsafe block allowed")
+    }
+}
